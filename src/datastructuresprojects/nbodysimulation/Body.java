@@ -1,9 +1,11 @@
 package datastructuresprojects.nbodysimulation;
 
+import static datastructuresprojects.nbodysimulation.NBodySimulation.PATH;
 import edu.princeton.cs.algs4.StdDraw;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 public class Body implements Cloneable {
 
@@ -26,23 +28,30 @@ public class Body implements Cloneable {
     }
     
     public void draw() {
-        StdDraw.picture(xPos, yPos, image);
+        StdDraw.picture(xPos, yPos, PATH + image);
     }
     
-    public static Collection<Body> update(Collection<Body> bodies) {
+    public static Collection<Body> update(Collection<Body> bodies,
+            double timeIncrement) {
         try {
             Collection<Body> updated = bodies.getClass().newInstance();
             bodies.forEach(body -> {
-                // TODO: Update
+                Body next = (Body)body.clone();
+                bodies.forEach(b -> {
+                        if (b != body)
+                            updated.add(next.update(b, timeIncrement));
+                                    });
+                next.move(timeIncrement);
             });
             return updated;
         } catch (InstantiationException | IllegalAccessException ex) {
+            ex.printStackTrace();
             Logger.getLogger(Body.class.getName()).log(Level.SEVERE, null, ex);
         }
         return bodies;
     }
     
-    public void update(Body other) {
+    public Body update(Body other, double timeIncrement) {
         double force = G*mass*other.getMass();
         double dist = distanceTo(other);
         double xForce = force * (xPos - other.xPos) / dist;
@@ -50,8 +59,17 @@ public class Body implements Cloneable {
         double xAccel = xForce / mass;
         double yAccel = yForce / mass;
         
-        xVel += xAccel;
-        yVel += xAccel;
+        xVel += xAccel * timeIncrement;
+        yVel += yAccel * timeIncrement;
+        
+        return this;
+    }
+    
+    public Body move(double timeIncrement) {
+        xPos += xVel * timeIncrement;
+        yPos += yVel * timeIncrement;
+        
+        return this;
     }
     
     public double distanceTo(Body other) {
@@ -101,8 +119,20 @@ public class Body implements Cloneable {
         this.yVel = yVel;
     }
     
+    @Override
     public Object clone() {
-        return new Body(xPos, yPos, xVel, yVel, mass, image);
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException ex) {
+            ex.printStackTrace();
+            Logger.getLogger(Body.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    @Override
+    public String toString() {
+        return "";
     }
 
 }
