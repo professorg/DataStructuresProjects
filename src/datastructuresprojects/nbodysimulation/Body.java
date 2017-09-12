@@ -37,9 +37,10 @@ public class Body implements Cloneable {
             Collection<Body> updated = bodies.getClass().newInstance();
             bodies.forEach(body -> {
                 Body next = (Body)body.clone();
+                updated.add(next);
                 bodies.forEach(b -> {
                         if (b != body)
-                            updated.add(next.update(b, timeIncrement));
+                            next.update(b, timeIncrement);
                                     });
                 next.move(timeIncrement);
             });

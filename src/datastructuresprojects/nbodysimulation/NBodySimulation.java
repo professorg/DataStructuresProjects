@@ -48,8 +48,12 @@ public class NBodySimulation {
         }
         
         for (double t = 0; t < duration; t += increment) {
+            long time = System.currentTimeMillis() + 1000/30;
+            
             bodies = update(bodies, increment);
             draw(bodies);
+            
+            while (System.currentTimeMillis() < time) {}
         }
 
     }
