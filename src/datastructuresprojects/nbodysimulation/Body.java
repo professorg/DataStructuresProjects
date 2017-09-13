@@ -1,11 +1,7 @@
 package datastructuresprojects.nbodysimulation;
 
-import static datastructuresprojects.nbodysimulation.NBodySimulation.PATH;
+import static datastructuresprojects.nbodysimulation_old.NBodySimulation.PATH;
 import edu.princeton.cs.algs4.StdDraw;
-import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Stream;
 
 public class Body implements Cloneable {
 
@@ -27,31 +23,19 @@ public class Body implements Cloneable {
         this.image = image;
     }
     
+    public Body(Body body) {
+        this.xPos = body.xPos;
+        this.yPos = body.yPos;
+        this.xVel = body.xVel;
+        this.yVel = body.yVel;
+        this.mass = body.mass;
+        this.image = body.image;
+    }
+    
     public void draw() {
         StdDraw.picture(xPos, yPos, PATH + image);
     }
-    
-    public static Collection<Body> update(Collection<Body> bodies,
-            double timeIncrement) {
-        try {
-            Collection<Body> updated = bodies.getClass().newInstance();
-            bodies.forEach(body -> {
-                Body next = (Body)body.clone();
-                updated.add(next);
-                bodies.forEach(b -> {
-                        if (b != body)
-                            next.update(b, timeIncrement);
-                                    });
-                next.move(timeIncrement);
-            });
-            return updated;
-        } catch (InstantiationException | IllegalAccessException ex) {
-            ex.printStackTrace();
-            Logger.getLogger(Body.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return bodies;
-    }
-    
+        
     public Body update(Body other, double timeIncrement) {
         double force = G*mass*other.getMass();
         double dist = distanceTo(other);
@@ -120,16 +104,16 @@ public class Body implements Cloneable {
         this.yVel = yVel;
     }
     
-    @Override
-    public Object clone() {
-        try {
-            return super.clone();
-        } catch (CloneNotSupportedException ex) {
-            ex.printStackTrace();
-            Logger.getLogger(Body.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
+//    @Override
+//    public Object clone() {
+//        try {
+//            return super.clone();
+//        } catch (CloneNotSupportedException ex) {
+//            ex.printStackTrace();
+//            Logger.getLogger(Body.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return null;
+//    }
     
     @Override
     public String toString() {
