@@ -39,7 +39,7 @@ public class Stack<E> implements Cloneable, Iterable {
     }
     
     @Override
-    public Iterator iterator() {
+    public Iterator<E> iterator() {
         return new StackIterator(this);
     }
 
@@ -53,8 +53,8 @@ public class Stack<E> implements Cloneable, Iterable {
     
     private class Node<E> {
         
-        private Node next;
-        private E data;
+        public Node next;
+        public E data;
         
         public Node(Node next, E data) {
             this.next = next;
@@ -64,9 +64,9 @@ public class Stack<E> implements Cloneable, Iterable {
     
     private class StackIterator<E> implements Iterator {
 
-        Node<E> node;
+        private Node<E> node;
         
-        public StackIterator(Stack stack) {
+        private StackIterator(Stack stack) {
             node = stack.head;
         }
         
