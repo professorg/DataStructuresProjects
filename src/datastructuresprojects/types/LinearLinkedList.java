@@ -16,7 +16,7 @@ import java.util.ListIterator;
  */
 public class LinearLinkedList<E> implements Cloneable, Iterable<E>, List<E> {
 
-    Node head;
+    Node<E> head;
     int length;
     
     public LinearLinkedList() {
@@ -58,7 +58,7 @@ public class LinearLinkedList<E> implements Cloneable, Iterable<E>, List<E> {
     @Override
     public boolean contains(Object o) {
         if (length < 1) return false;
-        Node next = head;
+        Node<E> next = head;
         while (next != null) {
             if (next.data.equals(o)) return true;
             next = next.next;
@@ -129,7 +129,16 @@ public class LinearLinkedList<E> implements Cloneable, Iterable<E>, List<E> {
 
     @Override
     public E remove(int i) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Node<E> curr = head;
+        for (int j = 1; j < i; j++) {
+            if (curr.next != null)
+                curr = curr.next;
+            else
+                throw new IndexOutOfBoundsException();
+        }
+        E data = (E) curr.next.data;
+        curr.next = curr.next.next;
+        return data;
     }
 
     @Override
@@ -157,12 +166,12 @@ public class LinearLinkedList<E> implements Cloneable, Iterable<E>, List<E> {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    private class Node<E> {
+    private class Node<F> {
         
         public Node next;
-        public E data;
+        public F data;
         
-        public Node(Node next, E data) {
+        public Node(Node next, F data) {
             this.next = next;
             this.data = data;
         }
@@ -177,9 +186,9 @@ public class LinearLinkedList<E> implements Cloneable, Iterable<E>, List<E> {
     }
 
     
-    private class LinearLinkedListIterator<E> implements Iterator<E> {
+    private class LinearLinkedListIterator<F> implements Iterator<F> {
 
-        private Node<E> node;
+        private Node<F> node;
         
         private LinearLinkedListIterator(LinearLinkedList lll) {
             node = lll.head;
@@ -191,8 +200,8 @@ public class LinearLinkedList<E> implements Cloneable, Iterable<E>, List<E> {
         }
 
         @Override
-        public E next() {
-            E ret = node.data;
+        public F next() {
+            F ret = node.data;
             node = node.next;
             return ret;
         }
