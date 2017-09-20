@@ -28,7 +28,12 @@ public class Stack<E> implements Cloneable, Iterable {
         return this;
     }
     
-    public E pop(E data) {
+    public E peek() {
+        if (head == null) return null;
+        return head.data;
+    }
+    
+    public E pop() {
         if (length < 1) throw new NoSuchElementException("Stack is empty");
         Node<E> current = head;
         while (current.next != null) {

@@ -5,7 +5,8 @@
  */
 package datastructuresprojects;
 
-import java.util.Stack;
+import datastructuresprojects.types.LinearLinkedList;
+import edu.princeton.cs.algs4.StdOut;
 
 /**
  *
@@ -18,6 +19,17 @@ public class DataStructuresProjects {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        LinearLinkedList<Double> lll = new LinearLinkedList();
+        lll.addFirst(6.4);
+        StdOut.println(lll);
+        lll.addFirst(7.1);
+        StdOut.println(lll);
+        lll.addLast(4.4);
+        StdOut.println(lll);
+        for (int i = 0; i < 3; i++) {
+            lll.addFirst(lll.removeLast());
+            StdOut.println(lll);
+        }
     }
     
 }

@@ -117,7 +117,7 @@ public class Body implements Cloneable {
     
     @Override
     public String toString() {
-        return "";
+        return String.format("%11.4E %11.4E %11.4E %11.4E %11.4E %13s", xPos, yPos, xVel, yVel, mass, image);
     }
 
 }

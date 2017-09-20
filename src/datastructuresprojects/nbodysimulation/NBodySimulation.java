@@ -9,6 +9,8 @@ import datastructuresprojects.types.LinearLinkedList;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdAudio;
 import edu.princeton.cs.algs4.StdDraw;
+import edu.princeton.cs.algs4.StdIn;
+import edu.princeton.cs.algs4.StdOut;
 import java.util.Collection;
 import java.util.List;
 
@@ -18,9 +20,11 @@ import java.util.List;
  */
 public class NBodySimulation {
     
-    public static final String PATH = "src/datastructuresprojects/nbodysimulation"
-            + "/nbody/nbody/";
+    public static final String PATH = "src\\datastructuresprojects\\nbodysimulation"
+            + "\\nbody\\nbody\\";
     public static final double G = 6.67E-11;
+    public static final boolean DEBUG = true;
+    public static final int FPS = 1000;
 
     /**
      * @param args the command line arguments
@@ -28,14 +32,21 @@ public class NBodySimulation {
     public static void main(String[] args) {
         // TODO code application logic here
         
-        String[] fakeArgs = {"1E100", "5E4", "planets.txt"};
-        //double duration = StdIn.readDouble();
-        double duration = Double.parseDouble(fakeArgs[0]);
-        //double increment = StdIn.readDouble();
-        double increment = Double.parseDouble(fakeArgs[1]);
-
-        //String varsFile = StdIn.readString();
-        String varsFile = fakeArgs[2];
+        double duration;
+        double increment;
+        String varsFile;
+        
+        if (DEBUG) {
+            String[] fakeArgs = {"1E100", "5E4", "double-suns.txt"};
+            duration = Double.parseDouble(fakeArgs[0]);
+            increment = Double.parseDouble(fakeArgs[1]);
+            varsFile = fakeArgs[2];
+        }
+        else {
+            increment = StdIn.readDouble();
+            duration = StdIn.readDouble();
+            varsFile = StdIn.readString();
+        }
         In vars = new In(PATH + varsFile);
 
         int numBodies = vars.readInt();
@@ -58,7 +69,7 @@ public class NBodySimulation {
         //StdAudio.play(PATH + "2001.wav");
 
         for (double t = 0; t < duration; t += increment) {
-            long time = System.currentTimeMillis() + 1000/60;
+            long time = System.currentTimeMillis() + 1000/FPS;
             
             List<Body> old = bodies;
             bodies = new LinearLinkedList();
@@ -109,6 +120,10 @@ public class NBodySimulation {
             
             while (System.currentTimeMillis() < time) {}
         }
+        
+        StdOut.println(numBodies);
+        StdOut.println(universeRadius);
+        bodies.forEach(b -> StdOut.println(b));
 
     }
         
