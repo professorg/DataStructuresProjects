@@ -12,7 +12,7 @@ import java.util.NoSuchElementException;
  *
  * @author gvandomelen19
  */
-public class Stack<E> implements Cloneable, Iterable {
+public class Stack<E> implements Cloneable, Iterable<E> {
 
     private Node<E> head;
     private int length;
@@ -35,6 +35,10 @@ public class Stack<E> implements Cloneable, Iterable {
     
     public E pop() {
         if (length < 1) throw new NoSuchElementException("Stack is empty");
+        if (head.next == null) {
+            E ret = head.data;
+            return ret;
+        }
         Node<E> current = head;
         while (current.next != null) {
             current = current.next;
@@ -45,7 +49,7 @@ public class Stack<E> implements Cloneable, Iterable {
     
     @Override
     public Iterator<E> iterator() {
-        return new StackIterator(this);
+        return new StackIterator();
     }
 
     public int size() {
@@ -65,15 +69,19 @@ public class Stack<E> implements Cloneable, Iterable {
             this.next = next;
             this.data = data;
         }
+        
+        private Node tail() {
+            Node ret = this;
+            while (ret.next != null) {
+                ret = ret.next;
+            }
+            return ret;
+        }
     }
     
-    private class StackIterator<E> implements Iterator {
+    private class StackIterator implements Iterator<E> {
 
-        private Node<E> node;
-        
-        private StackIterator(Stack stack) {
-            node = stack.head;
-        }
+        private Node<E> node = head;
         
         @Override
         public boolean hasNext() {

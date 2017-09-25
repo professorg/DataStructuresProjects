@@ -12,31 +12,38 @@ import java.util.NoSuchElementException;
  *
  * @author gvandomelen19
  */
-public class Queue<E> implements Cloneable, Iterable<E> {
+public class CircularQueue<E> implements Cloneable, Iterable<E> {
 
-    private Node<E> head;
     private Node<E> tail;
     private int length;
     
-    public Queue<E> enqueue(E data) {
-        if (head == null) {
-            head = new Node(null, data);
-            tail = head;
+    public CircularQueue<E> enqueue(E data) {
+        ++length;
+        if (tail == null) {
+            tail = new Node(null, data);
+            tail.next = tail;
         } else {
-            tail.next = new Node(null, data);
+            tail.next = new Node(tail.next, data);
             tail = tail.next;
         }
-        ++length;
         return this;
     }
     
     public E dequeue() {
-        if (length < 1) throw new NoSuchElementException("List is empty");
+        if (tail == null) throw new NoSuchElementException("Queue is empty");
         --length;
-        E ret = head.data;
-        if (head == tail) tail = null;
-        head = head.next;
+        E ret = tail.next.data;
+        if (tail.next == tail) {
+            tail = null;
+            return ret;
+        } else {
+            tail.next = tail.next.next;
+        }
         return ret;
+    }
+    
+    public int size() {
+        return length;
     }
     
     @Override
@@ -45,19 +52,18 @@ public class Queue<E> implements Cloneable, Iterable<E> {
     }
     
     private class QueueIterator implements Iterator<E> {
-
-        private Node<E> node = head;
+        
+        Node<E> node = tail;
         
         @Override
         public boolean hasNext() {
-            return node != null;
+            return node.next != tail;
         }
 
         @Override
         public E next() {
-            E ret = node.data;
             node = node.next;
-            return ret;
+            return node.data;
         }
         
     }

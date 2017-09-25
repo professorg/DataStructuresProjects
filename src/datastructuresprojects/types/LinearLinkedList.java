@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
 /**
  *
@@ -58,7 +59,7 @@ public class LinearLinkedList<E> implements Cloneable, Iterable<E>, List<E> {
     }
     
     public E removeLast() {
-        if (head == null) return null;
+        if (length < 1) throw new NoSuchElementException("List is empty");
         if (head.next == null) {
             E ret = head.data;
             head = null;
@@ -80,7 +81,7 @@ public class LinearLinkedList<E> implements Cloneable, Iterable<E>, List<E> {
     
     @Override
     public Iterator<E> iterator() {
-        return new LinearLinkedListIterator(this);
+        return new LinearLinkedListIterator();
     }
 
     @Override
@@ -90,6 +91,16 @@ public class LinearLinkedList<E> implements Cloneable, Iterable<E>, List<E> {
 
     @Override
     public boolean contains(Object o) {
+        if (length < 1) return false;
+        Node<E> next = head;
+        while (next != null) {
+            if (next.data.equals(o)) return true;
+            next = next.next;
+        }
+        return false;
+    }
+    
+    public boolean find(Object o) {
         if (length < 1) return false;
         Node<E> next = head;
         while (next != null) {
@@ -231,13 +242,9 @@ public class LinearLinkedList<E> implements Cloneable, Iterable<E>, List<E> {
     }
 
     
-    private class LinearLinkedListIterator<F> implements Iterator<F> {
+    private class LinearLinkedListIterator implements Iterator<E> {
 
-        private Node<F> node;
-        
-        private LinearLinkedListIterator(LinearLinkedList lll) {
-            node = lll.head;
-        }
+        private Node<E> node = head;
         
         @Override
         public boolean hasNext() {
@@ -245,8 +252,8 @@ public class LinearLinkedList<E> implements Cloneable, Iterable<E>, List<E> {
         }
 
         @Override
-        public F next() {
-            F ret = node.data;
+        public E next() {
+            E ret = node.data;
             node = node.next;
             return ret;
         }
