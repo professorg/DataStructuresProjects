@@ -7,7 +7,6 @@ package datastructuresprojects.nbodysimulation;
 
 import datastructuresprojects.types.LinearLinkedList;
 import edu.princeton.cs.algs4.In;
-import edu.princeton.cs.algs4.StdAudio;
 import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
@@ -37,7 +36,7 @@ public class NBodySimulation {
         String varsFile;
         
         if (DEBUG) {
-            String[] fakeArgs = {"1E100", "5E4", "double-suns.txt"};
+            String[] fakeArgs = {"1E100", "5E4", "planets.txt"};
             duration = Double.parseDouble(fakeArgs[0]);
             increment = Double.parseDouble(fakeArgs[1]);
             varsFile = fakeArgs[2];

@@ -17,7 +17,7 @@ public class JosephusProblem {
     
     public static void main(String[] args) {
         
-        String[] fakeArgs = {"2", "7"};
+        String[] fakeArgs = {"3", "100000"};
         int m;
         int n;
         CircularQueue<Integer> cq = new CircularQueue();
