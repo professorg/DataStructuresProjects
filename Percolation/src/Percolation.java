@@ -53,10 +53,10 @@ public class Percolation {
         int dn = to1D(row+1, col);
         int lt = to1D(row, col-1);
         int rt = to1D(row, col+1);
-        if (up >= 0) uf.union(id, up);
-        if (dn >= 0) uf.union(id, dn);
-        if (lt >= 0) uf.union(id, lt);
-        if (rt >= 0) uf.union(id, rt);
+        if (up >= 0 && open[up]) uf.union(id, up);
+        if (dn >= 0 && open[dn]) uf.union(id, dn);
+        if (lt >= 0 && open[lt]) uf.union(id, lt);
+        if (rt >= 0 && open[rt]) uf.union(id, rt);
     }
     
     private int to1D(int row, int col) {
