@@ -13,33 +13,29 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
  */
 public class Percolation {
 
-    private WeightedQuickUnionUF uf;
-    private boolean[] open;
+    private final WeightedQuickUnionUF uf;
+    private final boolean[] open;
     private int openSites;
     private final int n;
-    private final int VIRTUAL_TOP;
-    private final int VIRTUAL_BOT;
+    private final int virtualTop;
+    private final int virtualBot;
     
     public Percolation(int n) {
         if (n <= 0) throw new IllegalArgumentException();
         uf = new WeightedQuickUnionUF(n * n + 2);   // 0 - n*n-1 -- sites
-        VIRTUAL_TOP = n*n;                          // n*n       -- virtual top
-        VIRTUAL_BOT = n*n + 1;                      // n*n + 1   -- virtual bottom
-        open = new boolean[n*n];
+        virtualTop = n*n;                          // n*n       -- virtual top
+        virtualBot = n*n + 1;                      // n*n + 1   -- virtual bottom
+        open = new boolean[n*n+2];
+        open[virtualTop] = true;
+        open[virtualBot] = true;
         this.n = n;
         openSites = 0;
-        initUnions();
-    }
-    
-    private void initUnions() {
-        for (int i = 0; i < n; i++) {
-            uf.union(i, VIRTUAL_TOP);
-            uf.union(VIRTUAL_BOT-1-i, VIRTUAL_BOT);
-        }
     }
 
-    public void open(int row, int col) { row--;col--;
-        if (row < 0 || col < 0) throw new IllegalArgumentException();
+    public void open(int row, int col) {
+        row--;
+        col--;
+        if (row < 0 || col < 0 || row >= n || col >= n) throw new IllegalArgumentException();
         if (!open[to1D(row, col)]) {
             openSites++;
             open[to1D(row,col)] = true;
@@ -60,18 +56,24 @@ public class Percolation {
     }
     
     private int to1D(int row, int col) {
-        if (row < 0 || col < 0) return -1;
+        if (row == -1) return virtualTop;
+        if (row == n)  return virtualBot;
+        if (row < 0 || col < 0 || row >= n || col >= n) return -1;
         return col + row*n;
     }
 
-    public boolean isOpen(int row, int col) { row--;col--;
-        if (row < 0 || col < 0) throw new IllegalArgumentException();
+    public boolean isOpen(int row, int col) {
+        row--;
+        col--;
+        if (row < 0 || col < 0 || row >= n || col >= n) throw new IllegalArgumentException();
         return open[to1D(row, col)];
     }
 
-    public boolean isFull(int row, int col) { row--;col--;
-        if (row < 0 || col < 0) throw new IllegalArgumentException();
-        return uf.connected(to1D(row, col), VIRTUAL_TOP);
+    public boolean isFull(int row, int col) {
+        row--;
+        col--;
+        if (row < 0 || col < 0 || row >= n || col >= n) throw new IllegalArgumentException();
+        return open[to1D(row, col)] && uf.connected(to1D(row, col), virtualTop);
     }
 
     public int numberOfOpenSites() {
@@ -79,7 +81,7 @@ public class Percolation {
     }
 
     public boolean percolates() {
-        return uf.connected(VIRTUAL_TOP, VIRTUAL_BOT);
+        return uf.connected(virtualTop, virtualBot);
     }
 
     public static void main(String[] args) {
