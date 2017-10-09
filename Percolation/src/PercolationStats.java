@@ -26,6 +26,7 @@ public class PercolationStats {
         this.n = n;
         this.trials = trials;
         this.data = new int[trials];
+        runTrials();
     }
     
     public double mean() {
@@ -61,7 +62,6 @@ public class PercolationStats {
         int n = Integer.parseInt(args[0]);
         int t = Integer.parseInt(args[1]);
         PercolationStats ps = new PercolationStats(n, t);
-        ps.runTrials();
         StdOut.println(ps.mean());
         StdOut.println(ps.stddev());
         StdOut.println(ps.confidenceLo());

@@ -14,6 +14,7 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 public class Percolation {
 
     private final WeightedQuickUnionUF uf;
+    private final WeightedQuickUnionUF ufFull;
     private final boolean[] open;
     private int openSites;
     private final int n;
@@ -23,8 +24,9 @@ public class Percolation {
     public Percolation(int n) {
         if (n <= 0) throw new IllegalArgumentException();
         uf = new WeightedQuickUnionUF(n * n + 2);   // 0 - n*n-1 -- sites
-        virtualTop = n*n;                          // n*n       -- virtual top
-        virtualBot = n*n + 1;                      // n*n + 1   -- virtual bottom
+        virtualTop = n*n;                           // n*n       -- virtual top
+        virtualBot = n*n + 1;                       // n*n + 1   -- virtual bottom
+        ufFull = new WeightedQuickUnionUF(n * n + 1);
         open = new boolean[n*n+2];
         open[virtualTop] = true;
         open[virtualBot] = true;
@@ -49,10 +51,22 @@ public class Percolation {
         int dn = to1D(row+1, col);
         int lt = to1D(row, col-1);
         int rt = to1D(row, col+1);
-        if (up >= 0 && open[up]) uf.union(id, up);
-        if (dn >= 0 && open[dn]) uf.union(id, dn);
-        if (lt >= 0 && open[lt]) uf.union(id, lt);
-        if (rt >= 0 && open[rt]) uf.union(id, rt);
+        if (up >= 0 && open[up] && !uf.connected(id, up)) {
+            uf.union(id, up);
+            ufFull.union(id, up);
+        }
+        if (dn >= 0 && open[dn] && !uf.connected(id, dn)) {
+            uf.union(id, dn);
+            if (dn != virtualBot) ufFull.union(id, dn);
+        }
+        if (lt >= 0 && open[lt] && !uf.connected(id, lt)) {
+            uf.union(id, lt);
+            ufFull.union(id, lt);
+        }
+        if (rt >= 0 && open[rt] && !uf.connected(id, rt)) {
+            uf.union(id, rt);
+            ufFull.union(id, rt);
+        }
     }
     
     private int to1D(int row, int col) {
@@ -73,7 +87,7 @@ public class Percolation {
         row--;
         col--;
         if (row < 0 || col < 0 || row >= n || col >= n) throw new IllegalArgumentException();
-        return open[to1D(row, col)] && uf.connected(to1D(row, col), virtualTop);
+        return open[to1D(row, col)] && ufFull.connected(to1D(row, col), virtualTop);
     }
 
     public int numberOfOpenSites() {
