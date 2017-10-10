@@ -40,7 +40,7 @@ public class Percolation {
         if (row < 0 || col < 0 || row >= n || col >= n) throw new IllegalArgumentException();
         if (!open[to1D(row, col)]) {
             openSites++;
-            open[to1D(row,col)] = true;
+            open[to1D(row, col)] = true;
             unionNear(row, col);
         }
     }
@@ -51,19 +51,20 @@ public class Percolation {
         int dn = to1D(row+1, col);
         int lt = to1D(row, col-1);
         int rt = to1D(row, col+1);
-        if (up >= 0 && open[up] && !uf.connected(id, up)) {
+        if (up >= 0 && open[up] && !ufFull.connected(id, up)) {
             uf.union(id, up);
             ufFull.union(id, up);
         }
-        if (dn >= 0 && open[dn] && !uf.connected(id, dn)) {
+        if (dn >= 0 && open[dn]) {
             uf.union(id, dn);
-            if (dn != virtualBot) ufFull.union(id, dn);
+            if (dn != virtualBot && !ufFull.connected(id, dn))
+                ufFull.union(id, dn);
         }
-        if (lt >= 0 && open[lt] && !uf.connected(id, lt)) {
+        if (lt >= 0 && open[lt] && !ufFull.connected(id, lt)) {
             uf.union(id, lt);
             ufFull.union(id, lt);
         }
-        if (rt >= 0 && open[rt] && !uf.connected(id, rt)) {
+        if (rt >= 0 && open[rt] && !ufFull.connected(id, rt)) {
             uf.union(id, rt);
             ufFull.union(id, rt);
         }
@@ -87,6 +88,7 @@ public class Percolation {
         row--;
         col--;
         if (row < 0 || col < 0 || row >= n || col >= n) throw new IllegalArgumentException();
+        // return open[to1D(row, col)] && uf.connected(to1D(row, col), virtualTop);
         return open[to1D(row, col)] && ufFull.connected(to1D(row, col), virtualTop);
     }
 
@@ -96,10 +98,6 @@ public class Percolation {
 
     public boolean percolates() {
         return uf.connected(virtualTop, virtualBot);
-    }
-
-    public static void main(String[] args) {
-
     }
 
 }
