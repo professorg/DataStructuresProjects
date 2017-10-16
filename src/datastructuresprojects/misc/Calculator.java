@@ -20,7 +20,7 @@ public class Calculator {
         Stack<Double> nums = new Stack();
         Stack<Integer> operators = new Stack();
         
-        String input = "(1+1)";
+        String input = "1+2)*3)-4)/5)";
         String currNum = "";
         
         for (int i = 0; i < input.length(); i++) {

@@ -35,16 +35,19 @@ public class Stack<E> implements Cloneable, Iterable<E> {
     
     public E pop() {
         if (length < 1) throw new NoSuchElementException("Stack is empty");
+        --length;
         if (head.next == null) {
             E ret = head.data;
+            head = null;
             return ret;
         }
         Node<E> current = head;
-        while (current.next != null) {
+        while (current.next.next != null) {
             current = current.next;
         }
-        --length;
-        return current.data;
+        E ret = (E) current.next.data;
+        current.next = null;
+        return ret;
     }
     
     @Override

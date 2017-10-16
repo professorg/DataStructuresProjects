@@ -11,6 +11,7 @@ import java.util.NoSuchElementException;
 /**
  *
  * @author gvandomelen19
+ * @param <E>
  */
 public class Queue<E> implements Cloneable, Iterable<E> {
 
