@@ -47,7 +47,7 @@ public class RandomVisualizer {
             
             int r = StdRandom.uniform(lo, hi);
             //int r = (int)(Math.random()*n+lo);
-            count[r]++;
+            count[r-lo]++;
             
             StdDraw.textRight(1.0*n, 1.025*nums, "nums = " + nums);
             
@@ -58,8 +58,8 @@ public class RandomVisualizer {
             StdDraw.setPenColor(StdDraw.WHITE);
             
             for (int i = 0; i < n; i++) {
-                StdDraw.filledRectangle(i+0.5, count[i+lo]/2.0, 0.45, count[i+lo]/2.0);
-                StdDraw.text(i+0.5, count[i+lo]/2.0+0.1*nums, ""+count[i+lo]);
+                StdDraw.filledRectangle(i+0.5, count[i]/2.0, 0.45, count[i]/2.0);
+                StdDraw.text(i+0.5, count[i]/2.0+0.1*nums, ""+count[i]);
             }
             
             StdDraw.setPenColor(StdDraw.GRAY);
