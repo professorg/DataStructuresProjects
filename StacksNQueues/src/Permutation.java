@@ -22,7 +22,7 @@ public class Permutation {
         String s;
         do {
             s = StdIn.readString();
-        } while (s != null);
+        } while (!s.equals(""));
         String[] strings = StdIn.readAllStrings();
         StdRandom.shuffle(strings);
         for (int i = 0; i < k; i++) {
