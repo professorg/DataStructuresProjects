@@ -4,10 +4,11 @@ import java.util.NoSuchElementException;
 /**
  *
  * @author gvandomelen19
+ * @param <Item>
  */
-public class Deque<E> implements Cloneable, Iterable<E> {
+public class Deque<Item> implements Iterable<Item> {
 
-    private Node<E> head;
+    private Node head;
     private int length;
     
     public Deque() {
@@ -15,13 +16,13 @@ public class Deque<E> implements Cloneable, Iterable<E> {
         length = 0;
     }
     
-    public void addFirst(E data) {
+    public void addFirst(Item data) {
         if (length == 0) {
             head = new Node(data);
             head.next = head;
             head.last = head;
         } else {
-            Node<E> n = new Node(data);
+            Node n = new Node(data);
             n.next = head;
             n.last = head.last;
             head.last.next = n;
@@ -31,8 +32,8 @@ public class Deque<E> implements Cloneable, Iterable<E> {
         ++length;
     }
     
-    public E removeFirst() {
-        E ret;
+    public Item removeFirst() {
+        Item ret;
         if (length < 1) {
             throw new NoSuchElementException("Deque is empty");
         } else if (length == 1) {
@@ -48,13 +49,13 @@ public class Deque<E> implements Cloneable, Iterable<E> {
         return ret;
     }
     
-    public void addLast(E data) {
+    public void addLast(Item data) {
         if (length == 0) {
             head = new Node(data);
             head.next = head;
             head.last = head;
         } else {
-            Node<E> n = new Node(data);
+            Node n = new Node(data);
             n.next = head;
             n.last = head.last;
             head.last.next = n;
@@ -65,8 +66,8 @@ public class Deque<E> implements Cloneable, Iterable<E> {
     
     public boolean isEmpty() { return length < 1; }
     
-    public E removeLast() {
-        E ret;
+    public Item removeLast() {
+        Item ret;
         if (length < 1) {
             throw new NoSuchElementException("Deque is empty");
         } else if (length == 1) {
@@ -86,13 +87,13 @@ public class Deque<E> implements Cloneable, Iterable<E> {
     }
     
     @Override
-    public Iterator<E> iterator() {
+    public Iterator<Item> iterator() {
         return new QueueIterator();
     }
     
-    private class QueueIterator implements Iterator<E> {
+    private class QueueIterator implements Iterator<Item> {
         
-        Node<E> node = head.last;
+        Node node = head.last;
         int left = length;
         
         @Override
@@ -101,7 +102,7 @@ public class Deque<E> implements Cloneable, Iterable<E> {
         }
 
         @Override
-        public E next() {
+        public Item next() {
             if (!hasNext()) throw new NoSuchElementException();
             --left;
             node = node.next;
@@ -115,22 +116,14 @@ public class Deque<E> implements Cloneable, Iterable<E> {
         
     }
     
-    private class Node<E> {
+    private class Node {
         
-        private Node<E> next;
-        private Node<E> last;
-        private E data;
+        public Node next;
+        public Node last;
+        public Item data;
         
-        private Node(E data) {
+        private Node(Item data) {
             this.data = data;
-        }
-        
-        private Node tail() {
-            Node ret = this;
-            while (ret.next != null) {
-                ret = ret.next;
-            }
-            return ret;
         }
         
     }

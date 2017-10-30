@@ -1,4 +1,3 @@
-import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -12,14 +11,15 @@ import java.util.NoSuchElementException;
 /**
  *
  * @author gvandomelen19
+ * @param <Item>
  */
-public class RandomizedQueue<E> implements Iterable<E> {
+public class RandomizedQueue<Item> implements Iterable<Item> {
 
-    private E[] items;
+    private Item[] items;
     private int length;
 
     public RandomizedQueue() {
-        items = (E[])new Object[1];
+        items = (Item[]) new Object[1];
         length = 0;
     }                 // construct an empty randomized queue
 
@@ -31,78 +31,52 @@ public class RandomizedQueue<E> implements Iterable<E> {
         return length;
     }                        // return the number of items on the randomized queue
 
-    public void enqueue(E item) {
+    public void enqueue(Item item) {
         if (length == items.length) {
             items = Arrays.copyOf(items, items.length << 1);
         }
         items[length++] = item;
     }           // add the item
 
-    public E dequeue() {
+    public Item dequeue() {
         if (length < 1) throw new NoSuchElementException("Queue is empty");
         int r = StdRandom.uniform(length);
         swap(items, r, --length);
-        E ret = items[length];
+        Item ret = items[length];
         if (length <= items.length >> 2) {
             items = Arrays.copyOf(items, items.length >> 1);
         }
         return ret;
     }                    // remove and return a random item
     
-    private void swap(Object[] o, int x, int y) {
-        Object a = o[x];
-        o[x] = o[y];
-        o[y] = a;
+    private void swap(Object[] objs, int x, int y) {
+        Object a = objs[x];
+        objs[x] = objs[y];
+        objs[y] = a;
+    }
+    
+    private void swap(int[] ints, int x, int y) {
+        int a = ints[x];
+        ints[x] = ints[y];
+        ints[y] = a;
     }
 
-    public E sample() {
+    public Item sample() {
         return sample(length);
     }                     // return a random item (but do not remove it)
     
-    private E sample(int left) {
+    private Item sample(int left) {
         int r = StdRandom.uniform(left);
         swap(items, r, left-1);
         return items[left-1];
     }                     // return a random item (but do not remove it)
 
-    public Iterator<E> iterator() {
+    @Override
+    public Iterator<Item> iterator() {
         return new RandomQueueIterator();
     }         // return an independent iterator over items in random order
 
-    public static void main(String[] args) {
-        
-        RandomizedQueue<Double> rq = new RandomizedQueue();
-        rq.enqueue(1.5);
-        rq.enqueue(6.3);
-        rq.enqueue(3.98);
-        StdOut.println(rq.dequeue());
-        StdOut.println(rq.dequeue());
-        StdOut.println(rq.dequeue());
-        StdOut.println(rq.dequeue());
-        
-    }   // unit testing (optional)
-
-    private class Node<E> {
-
-        private Node<E> next;
-        private E data;
-
-        private Node(Node next, E data) {
-            this.next = next;
-            this.data = data;
-        }
-
-        private Node tail() {
-            Node ret = this;
-            while (ret.next != null) {
-                ret = ret.next;
-            }
-            return ret;
-        }
-
-    }
-
-    private class RandomQueueIterator implements Iterator<E> {
+    private class RandomQueueIterator implements Iterator<Item> {
 
         int left = length;
         int[] indices = new int[length];
@@ -117,7 +91,7 @@ public class RandomizedQueue<E> implements Iterable<E> {
         }
 
         @Override
-        public E next() {
+        public Item next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }

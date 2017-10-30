@@ -18,15 +18,21 @@ public class Permutation {
     public static void main(String[] args) {
         
         int k = Integer.parseInt(args[0]);
-        
-        String s;
-        do {
-            s = StdIn.readString();
-        } while (!s.equals(""));
-        String[] strings = StdIn.readAllStrings();
-        StdRandom.shuffle(strings);
-        for (int i = 0; i < k; i++) {
-            StdOut.println(strings[i]);
+        int n = 0;
+        RandomizedQueue<String> rq = new RandomizedQueue<String>();
+        while (StdIn.hasNextChar()) {
+            n++;
+            if (n > k) {
+                if (StdRandom.bernoulli(1.0/n)) {
+                    rq.dequeue();
+                    rq.enqueue(StdIn.readString());
+                }
+            } else {
+                rq.enqueue(StdIn.readString());
+            }
+        }
+        for (String s : rq) {
+            StdOut.println(s);
         }
     }
     
