@@ -20,7 +20,7 @@ public class Permutation {
         int k = Integer.parseInt(args[0]);
         int n = 0;
         RandomizedQueue<String> rq = new RandomizedQueue<String>();
-        while (StdIn.hasNextChar()) {
+        while (!StdIn.isEmpty()) {
             n++;
             if (n > k) {
                 if (StdRandom.bernoulli(1.0/n)) {
