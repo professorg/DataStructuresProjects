@@ -25,7 +25,11 @@ public class Permutation {
             n++;
             String s = StdIn.readString();
             if (n > k) {
-                
+                int j = StdRandom.uniform(n);
+                if (j < k) {
+                    rq.dequeue();
+                    rq.enqueue(s);
+                }
             } else {
                 rq.enqueue(s);
             }
