@@ -21,14 +21,13 @@ public class Permutation {
         int n = 0;
         RandomizedQueue<String> rq = new RandomizedQueue<String>();
         while (!StdIn.isEmpty()) {
+            if (k == 0) break;
             n++;
+            String s = StdIn.readString();
             if (n > k) {
-                if (StdRandom.bernoulli(1.0/n)) {
-                    rq.dequeue();
-                    rq.enqueue(StdIn.readString());
-                }
+                
             } else {
-                rq.enqueue(StdIn.readString());
+                rq.enqueue(s);
             }
         }
         for (String s : rq) {

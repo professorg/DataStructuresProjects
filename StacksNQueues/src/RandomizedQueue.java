@@ -1,3 +1,4 @@
+
 import edu.princeton.cs.algs4.StdRandom;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -32,6 +33,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }                        // return the number of items on the randomized queue
 
     public void enqueue(Item item) {
+        if (item == null) throw new IllegalArgumentException();
         if (length == items.length) {
             items = Arrays.copyOf(items, items.length << 1);
         }
@@ -39,22 +41,25 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }           // add the item
 
     public Item dequeue() {
-        if (length < 1) throw new NoSuchElementException("Queue is empty");
+        if (length < 1) {
+            throw new NoSuchElementException("Queue is empty");
+        }
         int r = StdRandom.uniform(length);
         swap(items, r, --length);
         Item ret = items[length];
-        if (length <= items.length >> 2) {
+        items[length] = null;
+        if (length < items.length >> 2) {
             items = Arrays.copyOf(items, items.length >> 1);
         }
         return ret;
     }                    // remove and return a random item
-    
+
     private void swap(Object[] objs, int x, int y) {
         Object a = objs[x];
         objs[x] = objs[y];
         objs[y] = a;
     }
-    
+
     private void swap(int[] ints, int x, int y) {
         int a = ints[x];
         ints[x] = ints[y];
@@ -62,13 +67,10 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
     public Item sample() {
-        return sample(length);
-    }                     // return a random item (but do not remove it)
-    
-    private Item sample(int left) {
-        int r = StdRandom.uniform(left);
-        swap(items, r, left-1);
-        return items[left-1];
+        if (length < 1) throw new NoSuchElementException();
+        int r = StdRandom.uniform(length);
+        swap(items, r, length - 1);
+        return items[length - 1];
     }                     // return a random item (but do not remove it)
 
     @Override
@@ -80,7 +82,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
         int left = length;
         int[] indices = new int[length];
-        
+
         private RandomQueueIterator() {
             Arrays.setAll(indices, i -> i);
         }

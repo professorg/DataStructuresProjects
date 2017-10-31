@@ -17,6 +17,7 @@ public class Deque<Item> implements Iterable<Item> {
     }
     
     public void addFirst(Item data) {
+        if (data == null) throw new IllegalArgumentException();
         if (length == 0) {
             head = new Node(data);
             head.next = head;
@@ -50,6 +51,7 @@ public class Deque<Item> implements Iterable<Item> {
     }
     
     public void addLast(Item data) {
+        if (data == null) throw new IllegalArgumentException();
         if (length == 0) {
             head = new Node(data);
             head.next = head;
@@ -74,9 +76,9 @@ public class Deque<Item> implements Iterable<Item> {
             ret = head.data;
             head = null;
         } else {
-            ret = head.data;
-            head.last.next = head.next;
-            head.next.last = head.last;
+            ret = head.last.data;
+            head.last.last.next = head;
+            head.last = head.last.last;
         }
         --length;
         return ret;
@@ -93,7 +95,7 @@ public class Deque<Item> implements Iterable<Item> {
     
     private class QueueIterator implements Iterator<Item> {
         
-        Node node = head.last;
+        Node node = head;
         int left = length;
         
         @Override
@@ -105,8 +107,9 @@ public class Deque<Item> implements Iterable<Item> {
         public Item next() {
             if (!hasNext()) throw new NoSuchElementException();
             --left;
+            Item ret = node.data;
             node = node.next;
-            return node.data;
+            return ret;
         }
         
         @Override
