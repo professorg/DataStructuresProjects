@@ -64,7 +64,7 @@ public class Point implements Comparable<Point> {
         if (this.equals(that))  return Double.NEGATIVE_INFINITY;
         if (this.x == that.x)   return Double.POSITIVE_INFINITY;
         if (this.y == that.y)   return 0.0;
-        return (this.x - that.x) / (this.y - that.y);
+        return (this.x - that.x) / (float) (this.y - that.y);
     }
 
     /**
@@ -78,6 +78,7 @@ public class Point implements Comparable<Point> {
      * argument point; and a positive integer if this point is greater than the
      * argument point
      */
+    @Override
     public int compareTo(Point that) {
         /* YOUR CODE HERE */
         return (this.y == that.y ? this.x - that.x : this.y - that.y);
@@ -91,16 +92,7 @@ public class Point implements Comparable<Point> {
      */
     public Comparator<Point> slopeOrder() {
         /* YOUR CODE HERE */
-        return new SlopeOrder();
-    }
-    
-    private class SlopeOrder implements Comparator<Point> {
-
-        @Override
-        public int compare(Point p, Point q) {
-            return Double.compare(slopeTo(p), slopeTo(q));
-        }
-        
+        return ((p, q) -> Double.compare(slopeTo(p), slopeTo(q)));
     }
 
     /**
@@ -110,6 +102,7 @@ public class Point implements Comparable<Point> {
      *
      * @return a string representation of this point
      */
+    @Override
     public String toString() {
         /* DO NOT MODIFY */
         return "(" + x + ", " + y + ")";
@@ -117,6 +110,7 @@ public class Point implements Comparable<Point> {
 
     /**
      * Unit tests the Point data type.
+     * @param args
      */
     public static void main(String[] args) {
         /* YOUR CODE HERE */
