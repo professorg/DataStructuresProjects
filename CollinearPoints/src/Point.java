@@ -8,7 +8,6 @@
  *  For use on Coursera, Algorithms Part I programming assignment.
  *
  ***************************************************************************** */
-
 import java.util.Comparator;
 import edu.princeton.cs.algs4.StdDraw;
 
@@ -61,10 +60,16 @@ public class Point implements Comparable<Point> {
      */
     public double slopeTo(Point that) {
         /* YOUR CODE HERE */
-        if (this.equals(that))  return Double.NEGATIVE_INFINITY;
-        if (this.x == that.x)   return Double.POSITIVE_INFINITY;
-        if (this.y == that.y)   return 0.0;
-        return (this.x - that.x) / (float) (this.y - that.y);
+        if (this.x == that.x && this.y == that.y) {
+            return Double.NEGATIVE_INFINITY;
+        }
+        if (this.x == that.x) {
+            return Double.POSITIVE_INFINITY;
+        }
+        if (this.y == that.y) {
+            return 0.0;
+        }
+        return (this.y - that.y) / (double) (this.x - that.x);
     }
 
     /**
@@ -92,7 +97,12 @@ public class Point implements Comparable<Point> {
      */
     public Comparator<Point> slopeOrder() {
         /* YOUR CODE HERE */
-        return ((p, q) -> Double.compare(slopeTo(p), slopeTo(q)));
+        return ((p, q) -> {
+            if (p == null || q == null) {
+                throw new IllegalArgumentException();
+            }
+            return Double.compare(slopeTo(p), slopeTo(q));
+        });
     }
 
     /**
@@ -110,6 +120,7 @@ public class Point implements Comparable<Point> {
 
     /**
      * Unit tests the Point data type.
+     *
      * @param args
      */
     public static void main(String[] args) {
