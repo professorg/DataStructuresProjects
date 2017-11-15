@@ -1,6 +1,7 @@
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class FastCollinearPoints {
 
@@ -12,10 +13,14 @@ public class FastCollinearPoints {
         segments = new ArrayList<LineSegment>();
         this.points = points;
 
+        for (int i = 0; i < points.length; i++) {
+            if (points[i] == null) {
+                throw new IllegalArgumentException();
+            }
+        }
         Arrays.sort(this.points);
         for (int i = 0; i < points.length - 1; i++) {
-            if (points[i] == null || points[i + 1] == null
-                    || (points[i].compareTo(points[i + 1]) == 0)) {
+            if (points[i].compareTo(points[i + 1]) == 0) {
                 throw new IllegalArgumentException();
             }
         }
@@ -25,64 +30,102 @@ public class FastCollinearPoints {
 
     private void findCollinearPoints() {
 
-        for (int i = 0; i < points.length; i++) {
-            Arrays.sort(points, i + 1, points.length, points[i].slopeOrder());
+        for (int i = 0; i < points.length - 3; i++) {
 
             Point pi = points[i];
+            Arrays.sort(points, i + 1, points.length);
+            Arrays.sort(points, i + 1, points.length, pi.slopeOrder());
 
-            for (int j = i + 1; j < points.length - 2; j++) {
+            int j = i + 1;
+            int k = j + 2;
+            int state = 0;  // 0 : after leap
+            // 1 : going backwards
+            // 2 : going forwards
+
+            double m0 = pi.slopeTo(points[j]);
+
+            loop: while (true) {
                 
-                Point p0 = points[j];
-                double m0 = pi.slopeTo(p0);
-                
-                int k = j + 2;
-                while (pi.slopeTo(points[k]) == m0) {
-                    
+                switch (state) {
+
+                    case 0:
+                        if (k >= points.length) {
+                            break loop;
+                        }
+                        if (m0 == pi.slopeTo(points[k])) {
+                            state = 2;
+                            k++;
+                        } else {
+                            state = 1;
+                            m0 = pi.slopeTo(points[k]);
+                            k--;
+                        }
+                        break;
+
+                    case 1:
+                        if (m0 == pi.slopeTo(points[k])) {
+                            k--;
+                        } else {
+                            state = 0;
+                            k++;
+                            j = k;
+                            k = j + 2;
+                        }
+                        break;
+
+                    case 2:
+                        if (m0 == pi.slopeTo(points[k]) && k < points.length) {
+                            k++;
+                        } else {
+                            Point min = pi;
+                            Point max = pi;
+                            while (j < k) {
+                                min = min.compareTo(points[j]) < 0 ? min : points[j];
+                                max = max.compareTo(points[j]) > 0 ? max : points[j];
+                                j++;
+                            }
+                            segments.add(new LineSegment(min, max));
+                            if (k >= points.length) {
+                                break loop;
+                            }
+                            state = 0;
+                            k = j + 2;
+                            m0 = pi.slopeTo(points[j]);
+                        }
+                        break;
+
                 }
-                
-//                Point p0 = points[j];
-//                Point p1 = points[j + 1];
-//                Point p2 = points[j + 2];
-//                double m0 = pi.slopeTo(p0);
-//                double m1 = pi.slopeTo(p1);
-//                double m2 = pi.slopeTo(p2);
-//                if (m0 == m1 && m1 == m2) {
-//                    Point min = pi;
-//                    Point max = pi;
-//
-//                    if (p0.compareTo(min) < 0) {
-//                        min = p0;
-//                    }
-//                    if (p0.compareTo(max) > 0) {
-//                        max = p0;
-//                    }
-//                    if (p1.compareTo(min) < 0) {
-//                        min = p1;
-//                    }
-//                    if (p1.compareTo(max) > 0) {
-//                        max = p1;
-//                    }
-//                    if (p2.compareTo(min) < 0) {
-//                        min = p2;
-//                    }
-//                    if (p2.compareTo(max) > 0) {
-//                        max = p2;
-//                    }
-//                    
-//                    LineSegment segment = new LineSegment(min, max);
-//                    boolean repeat = false;
-//
-//                    for (LineSegment s : segments) {
-//                        if (segment.toString().equals(s.toString())) {
-//                            repeat = true;
-//                            break;
-//                        }
-//                    }
-//                    if (!repeat) {
-//                        segments.add(segment);
-//                    }
-//                }
+
             }
+
+//            for (int j = i + 1; j < points.length - 2; j++) {
+//
+//                Point p0 = points[i + 1];
+//                double m0 = pi.slopeTo(p0);
+//
+//                int k = j;
+//                while (k < points.length - 1 && pi.slopeTo(points[k + 1]) == m0) {
+//                    k++;
+//                }
+//
+//                if (k > j + 1) {
+//
+//                    Arrays.sort(points, j, k+1);
+//
+//                    Point min = points[j];
+//                    Point max = points[k];
+//                    if (pi.compareTo(min) < 0) {
+//                        min = pi;
+//                    } else if (pi.compareTo(max) > 0) {
+//                        max = pi;
+//                    }
+//                    segments.add(new LineSegment(min, max));
+//                    
+//                    j = k + 1;
+//
+//                }
+//
+//            }
         }
 
     }
