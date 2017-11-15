@@ -74,7 +74,7 @@ public class FastCollinearPoints {
                         break;
 
                     case 2:
-                        if (m0 == pi.slopeTo(points[k]) && k < points.length) {
+                        if (k < points.length && m0 == pi.slopeTo(points[k])) {
                             k++;
                         } else {
                             Point min = pi;
