@@ -1,7 +1,6 @@
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 public class FastCollinearPoints {
 
@@ -10,15 +9,20 @@ public class FastCollinearPoints {
 
     public FastCollinearPoints(Point[] points) {
 
+        if (points == null) {
+            throw new IllegalArgumentException();
+        }
+        
         segments = new ArrayList<LineSegment>();
-        this.points = points;
+        this.points = new Point[points.length];
 
         for (int i = 0; i < points.length; i++) {
             if (points[i] == null) {
                 throw new IllegalArgumentException();
             }
+            this.points[i] = points[i];
         }
-        Arrays.sort(this.points);
+        Arrays.sort(points);
         for (int i = 0; i < points.length - 1; i++) {
             if (points[i].compareTo(points[i + 1]) == 0) {
                 throw new IllegalArgumentException();
