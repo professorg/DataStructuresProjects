@@ -99,7 +99,7 @@ public class Point implements Comparable<Point> {
         /* YOUR CODE HERE */
         return ((p, q) -> {
             if (p == null || q == null) {
-                throw new IllegalArgumentException();
+                throw new NullPointerException();
             }
             return Double.compare(slopeTo(p), slopeTo(q));
         });

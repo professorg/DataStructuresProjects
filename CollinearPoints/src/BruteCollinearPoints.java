@@ -13,7 +13,6 @@ public class BruteCollinearPoints {
             throw new IllegalArgumentException();
         }
         
-
         segments = new ArrayList<LineSegment>();
         this.points = new Point[points.length];
 
@@ -23,9 +22,9 @@ public class BruteCollinearPoints {
             }
             this.points[i] = points[i];
         }
-        Arrays.sort(points);
-        for (int i = 0; i < points.length - 1; i++) {
-            if (points[i].compareTo(points[i + 1]) == 0) {
+        Arrays.sort(this.points);
+        for (int i = 0; i < this.points.length - 1; i++) {
+            if (this.points[i].compareTo(this.points[i + 1]) == 0) {
                 throw new IllegalArgumentException();
             }
         }
@@ -36,6 +35,8 @@ public class BruteCollinearPoints {
 
     private void findCollinearPoints() {
 
+        Arrays.sort(points);
+        
         for (int i = 0; i < points.length; i++) {
             Point pi = points[i];
             for (int j = i + 1; j < points.length; j++) {

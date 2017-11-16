@@ -22,9 +22,9 @@ public class FastCollinearPoints {
             }
             this.points[i] = points[i];
         }
-        Arrays.sort(points);
-        for (int i = 0; i < points.length - 1; i++) {
-            if (points[i].compareTo(points[i + 1]) == 0) {
+        Arrays.sort(this.points);
+        for (int i = 0; i < this.points.length - 1; i++) {
+            if (this.points[i].compareTo(this.points[i + 1]) == 0) {
                 throw new IllegalArgumentException();
             }
         }
@@ -102,34 +102,6 @@ public class FastCollinearPoints {
 
             }
 
-//            for (int j = i + 1; j < points.length - 2; j++) {
-//
-//                Point p0 = points[i + 1];
-//                double m0 = pi.slopeTo(p0);
-//
-//                int k = j;
-//                while (k < points.length - 1 && pi.slopeTo(points[k + 1]) == m0) {
-//                    k++;
-//                }
-//
-//                if (k > j + 1) {
-//
-//                    Arrays.sort(points, j, k+1);
-//
-//                    Point min = points[j];
-//                    Point max = points[k];
-//                    if (pi.compareTo(min) < 0) {
-//                        min = pi;
-//                    } else if (pi.compareTo(max) > 0) {
-//                        max = pi;
-//                    }
-//                    segments.add(new LineSegment(min, max));
-//                    
-//                    j = k + 1;
-//
-//                }
-//
-//            }
         }
 
     }
