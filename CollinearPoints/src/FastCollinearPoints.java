@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 public class FastCollinearPoints {
 
-    private ArrayList<LineSegment> segments;
-    private Point[] points;
+    private final ArrayList<LineSegment> segments;
+    private final Point[] points;
 
     public FastCollinearPoints(Point[] points) {
 
@@ -36,8 +36,8 @@ public class FastCollinearPoints {
 
         for (int i = 0; i < points.length - 3; i++) {
 
+            Arrays.sort(points, i, points.length);
             Point pi = points[i];
-            Arrays.sort(points, i + 1, points.length);
             Arrays.sort(points, i + 1, points.length, pi.slopeOrder());
 
             int j = i + 1;
@@ -81,18 +81,12 @@ public class FastCollinearPoints {
                         if (k < points.length && m0 == pi.slopeTo(points[k])) {
                             k++;
                         } else {
-                            Point min = pi;
-                            Point max = pi;
-                            while (j < k) {
-                                min = min.compareTo(points[j]) < 0 ? min : points[j];
-                                max = max.compareTo(points[j]) > 0 ? max : points[j];
-                                j++;
-                            }
-                            segments.add(new LineSegment(min, max));
+                            segments.add(new LineSegment(pi, points[k - 1]));
                             if (k >= points.length) {
                                 break loop;
                             }
                             state = 0;
+                            j = k;
                             k = j + 2;
                             m0 = pi.slopeTo(points[j]);
                         }
@@ -105,7 +99,7 @@ public class FastCollinearPoints {
         }
 
     }
-
+    
     public int numberOfSegments() {
         return segments.size();
     } // the number of line segments

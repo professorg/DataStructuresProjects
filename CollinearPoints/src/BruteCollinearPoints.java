@@ -49,40 +49,33 @@ public class BruteCollinearPoints {
                         double mk = pi.slopeTo(pk);
                         double mn = pi.slopeTo(pn);
                         if (mj == mk && mk == mn) {
-                            Point min = pi;
-                            Point max = pi;
+                            int mini = i;
+                            int maxi = i;
 
-                            if (pj.compareTo(min) < 0) {
-                                min = pj;
+                            if (pj.compareTo(points[mini]) < 0) {
+                                mini = j;
                             }
-                            if (pj.compareTo(max) > 0) {
-                                max = pj;
+                            if (pj.compareTo(points[maxi]) > 0) {
+                                maxi = j;
                             }
-                            if (pk.compareTo(min) < 0) {
-                                min = pk;
+                            if (pk.compareTo(points[mini]) < 0) {
+                                mini = k;
                             }
-                            if (pk.compareTo(max) > 0) {
-                                max = pk;
+                            if (pk.compareTo(points[maxi]) > 0) {
+                                maxi = k;
                             }
-                            if (pn.compareTo(min) < 0) {
-                                min = pn;
+                            if (pn.compareTo(points[mini]) < 0) {
+                                mini = n;
                             }
-                            if (pn.compareTo(max) > 0) {
-                                max = pn;
+                            if (pn.compareTo(points[maxi]) > 0) {
+                                maxi = n;
                             }
                             
+                            Point min = points[mini];
+                            Point max = points[maxi];
+                                                        
                             LineSegment segment = new LineSegment(min, max);
-                            boolean repeat = false;
-
-                            for (LineSegment s : segments) {
-                                if (segment.toString().equals(s.toString())) {
-                                    repeat = true;
-                                    break;
-                                }
-                            }
-                            if (!repeat) {
-                                segments.add(segment);
-                            }
+                            segments.add(segment);
                         }
                     }
                 }
