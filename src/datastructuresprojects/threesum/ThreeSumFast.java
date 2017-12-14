@@ -19,7 +19,8 @@ public class ThreeSumFast {
 
     public static int count(int[] a) { // Count triples that sum to 0.
         
-        Arrays.sort(a);
+        //Arrays.sort(a);
+        insertionSort(a);
         int n = a.length;
         int count = 0;
         for (int i = 0; i < n; i++) {
@@ -35,10 +36,10 @@ public class ThreeSumFast {
     public static void main(String[] args) {
         
         int[] ints;
-        double[] time = new double[5];
+        double[] time = new double[6];
         double t;
         
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 6; i++) {
             
             int num = 1 << i;
             
@@ -49,32 +50,42 @@ public class ThreeSumFast {
             
             time[i] = t;
             
-            if (i > 0) StdOut.printf("%9s+%f seconds", "", time[i-1]);
+            if (i > 0) StdOut.printf("%9s+%f seconds", "", t-time[i-1]);
             if (i > 1) StdOut.printf("(*%f)", t/time[i-1]);
             StdOut.printf("%n%2dKints : %f seconds%n", num, t);
             
             
         }
         
-        ints = new In("3sum\\1Mints.txt").readAllInts();
-        Stopwatch sw = new Stopwatch();
-        count(ints);
-        t = sw.elapsedTime();
-        
-        StdOut.printf("%n1Mints : %f seconds%n", t);
+//        ints = new In("3sum\\1Mints.txt").readAllInts();
+//        Stopwatch sw = new Stopwatch();
+//        count(ints);
+//        t = sw.elapsedTime();
+//        
+//        StdOut.printf("%n1Mints : %f seconds%n", t);
         
             
         // Arrays.sort
-        // Prediction (64K): 15 seconds
-        // Prediction (1M): 45 seconds
+        // 1K:   0.030 seconds
+        // 2K:   0.119 seconds
+        // 8K:   0.415 seconds
+        // 16K:  7.447 seconds
+        // 32K: 33.295 seconds
+        // Prediction (64K):   130 seconds
+        // Prediction (128K):  530 seconds
         
         // Insertion sort
-        // Prediction (64K): 16 seconds
-        // Prediction (1M): 45 seconds
+        // 1K:   0.045 seconds
+        // 2K:   0.140 seconds
+        // 8K:   1.971 seconds
+        // 16K:  7.537 seconds
+        // 32K: 32.033 seconds
+        // Prediction (64K):   130 seconds
+        // Prediction (128K):  530 seconds
         
     }
     
-    public void insertionSort(int[] a) {
+    public static void insertionSort(int[] a) {
         int n = a.length;
         int swaps = 0;
         for (int i = n-1; i > 0; i--) {
@@ -96,7 +107,7 @@ public class ThreeSumFast {
         }
     }
     
-    private void swap(int[] a, int x, int y) {
+    private static void swap(int[] a, int x, int y) {
         a[x] = a[x] ^ a[y];
         a[y] = a[x] ^ a[y];
         a[x] = a[x] ^ a[y];
