@@ -1,5 +1,6 @@
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -14,11 +15,18 @@ import java.util.Arrays;
 public class Board {
     
     private int n;
+    private int moves;
     private int[][] blocks;
+    
+    private Board(int[][] blocks, int moves) {
+        this(blocks);
+        this.moves = moves;
+    }
     
     public Board(int[][] blocks) {
         this.n = blocks.length;
         this.blocks = deepCopy(blocks);
+        this.moves = 0;
     }
     
     public int dimension() {
@@ -33,7 +41,7 @@ public class Board {
                     sum++;
             }
         }
-        return sum;
+        return sum + moves;
     }
     
     public int manhattan() {
@@ -48,13 +56,13 @@ public class Board {
                 }
             }
         }
-        return sum;
+        return sum + moves;
     }
     
     public boolean isGoal() {
         for (int row = 0; row < n; row++) {
             for (int col = 0; col < n; col++) {
-                if (blocks[row][col] != 0 && blocks[row][col] != row*n + col - 1)
+                if (blocks[row][col] != 0 && blocks[row][col] != row*n + col + 1)
                     return false;
             }
         }
@@ -97,45 +105,59 @@ public class Board {
     private int[][] deepCopy(int[][] blocks) {
         int[][] copy = new int[n][n];
         for (int i = 0; i < n; i++) {
-            System.arraycopy(copy[i], 0, this.blocks[i], 0, n);
+            System.arraycopy(blocks[i], 0, copy[i], 0, n);
         }
         return copy;
     }
     
     public Iterable<Board> neighbors() {
+        List<Board> neighbors = new ArrayList();
+        int[][] clone;
         for (int row = 0; row < n; row++) {
             for (int col = 0; col < n; col++) {
                 if (blocks[row][col] == 0) {
-                    byte flags = (byte) 0b1111_0000;
-                    if (row == 0) {
-                        flags ^= 0b0001_0000;
-                        flags++;
+                    if (row != 0) {
+                        clone = deepCopy(blocks);
+                        clone[row][col] = blocks[row - 1][col];
+                        clone[row - 1][col] = 0;
+                        neighbors.add(new Board(clone, moves + 1));
                     }
-                    if (row == n-1) {
-                        flags ^= 0b0010_0000;
-                        flags++;
+                    if (col != 0) {
+                        clone = deepCopy(blocks);
+                        clone[row][col] = blocks[row][col - 1];
+                        clone[row][col - 1] = 0;
+                        neighbors.add(new Board(clone, moves + 1));
                     }
-                    if (col == 0) {
-                        flags ^= 0b0100_0000;
-                        flags++;
+                    if (row != n - 1) {
+                        clone = deepCopy(blocks);
+                        clone[row][col] = blocks[row + 1][col];
+                        clone[row + 1][col] = 0;
+                        neighbors.add(new Board(clone, moves + 1));
                     }
-                    if (col == n-1) {
-                        flags ^= 0b1000_0000;
-                        flags++;
+                    if (col != n - 1) {
+                        clone = deepCopy(blocks);
+                        clone[row][col] = blocks[row][col + 1];
+                        clone[row][col + 1] = 0;
+                        neighbors.add(new Board(clone, moves + 1));
                     }
-                    Board[] neighbors = new Board[flags & 0b0000_1111];
-                    flags &= 0b1111_0000;
-                    if ((flags & 0b0001_0000) != 0) {
-                        neighbors[flags++ & 0b0000_1111] = new Board();
-                    }
+                    return neighbors;
                 }
             }
         }
+        return neighbors;
     }
     
     @Override
     public String toString() {
-        
+        String ret = n + "\n";
+        String size = String.format("%%%dd", (int) Math.log10(n*n) + 2);
+        for (int row = 0; row < n; row++) {
+            for (int col = 0; col < n; col++) {
+                ret += String.format(size, blocks[row][col]);
+            }
+            ret += "\n";
+        }
+        return ret;
     }
     
 }
