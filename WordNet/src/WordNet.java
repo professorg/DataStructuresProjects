@@ -3,6 +3,7 @@ import edu.princeton.cs.algs4.BreadthFirstDirectedPaths;
 import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Topological;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,9 +51,14 @@ public class WordNet {
             int synsetID = Integer.parseInt(synsetData[SYNSET_ID]);
             String synsetNouns = synsetData[SYNSET_NOUNS];
             sets[synsetID] = synsetNouns;
-            synsetIndices.put(synsetNouns, synsetID);
+            List<Integer> indices = synsetIndices.get(synsetNouns);
+            if (indices == null) {
+                indices = new ArrayList<>();
+                synsetIndices.put(synsetNouns, indices);
+            }
+            indices.add(synsetID);
             for (String synsetNoun : synsetNouns.split(" ")) {
-                synsetIndices.put(synsetNoun, synsetID);
+                indices.add(synsetID);
                 nouns.add(synsetNoun);
             }
         }
