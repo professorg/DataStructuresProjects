@@ -16,18 +16,22 @@ import java.util.List;
  */
 public class Solver {
 
-    private Board board;
+    private final Board board;
     private boolean solvable;
-    List<Board> solution;
+    private final List<Board> solution;
 
     public Solver(Board initial) {
+        if (initial == null) {
+            throw new IllegalArgumentException();
+        }
         board = initial;
+        solution = new ArrayList<Board>();
         solve();
     }
 
     private void solve() {
-        MinPQ<Node> pq = new MinPQ();
-        MinPQ<Node> twinpq = new MinPQ();
+        MinPQ<Node> pq = new MinPQ<Node>();
+        MinPQ<Node> twinpq = new MinPQ<Node>();
         pq.insert(new Node(board, null));
         twinpq.insert(new Node(board.twin(), null));
         Node n = null;
@@ -52,7 +56,6 @@ public class Solver {
             return;
         }
         solvable = true;
-        solution = new ArrayList();
         solution.add(0, n.board);
         while (n.last != null) {
             n = n.last;
@@ -69,6 +72,9 @@ public class Solver {
     }
 
     public Iterable<Board> solution() {
+        if (solution.size() < 1) {
+            return null;
+        }
         return solution;
     }
 
@@ -97,30 +103,40 @@ public class Solver {
                 StdOut.println(board);
             }
         }
+
     }
 
-    private static class Node implements Comparable {
+    private static class Node implements Comparable<Node> {
 
-        public Board board;
-        public Node last;
-        private int manhattan;
+        public final Board board;
+        public final Node last;
+        private final int moves;
+        private final int manhattan;
+        private final int hamming;
 
         public Node(Board b, Node last) {
             this.board = b;
             this.last = last;
+            if (last == null) {
+                this.moves = 0;
+            } else {
+                this.moves = last.moves + 1;
+            }
             this.manhattan = board.manhattan();
+            this.hamming = board.hamming();
         }
 
-        public int compareTo(Node other) {
-            return manhattan - other.manhattan;
+        private int manhattanPriority() {
+            return manhattan + moves;
+        }
+
+        private int hammingPriority() {
+            return manhattan + moves;
         }
 
         @Override
-        public int compareTo(Object other) {
-            if (other instanceof Node) {
-                return manhattan - ((Node) other).manhattan;
-            }
-            return 0;
+        public int compareTo(Node other) {
+            return manhattanPriority() - other.manhattanPriority();
         }
     }
 }
