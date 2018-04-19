@@ -1,5 +1,4 @@
 
-import edu.princeton.cs.algs4.BreadthFirstDirectedPaths;
 import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Topological;
@@ -26,11 +25,12 @@ public class WordNet {
     private static final int HYPERNYM_ID = 0;
     private static final int SYNSET_NOUNS = 1;
     
-    private Set<String> nouns;
+    private final Set<String> nouns;
     private Digraph hypernymGraph;
     private String[] synsets;
     private SAP shortestAncestralPaths;
-    private final Map<String, List<Integer>> synsetIndices;
+    private final Map<String, List<Integer>> wordIndices;
+    private final Map<String, Integer> synsetIndices;
     
     // constructor takes the name of the two input files
     public WordNet(String synsetsFile, String hypernymsFile) {
@@ -43,6 +43,7 @@ public class WordNet {
         int numSynsets = synsetStrings.length;
         String[] sets = new String[numSynsets];
         
+        wordIndices = new HashMap<>();
         synsetIndices = new HashMap<>();
         nouns = new TreeSet<>();
         
@@ -50,16 +51,16 @@ public class WordNet {
             String[] synsetData = synsetString.split(",");
             int synsetID = Integer.parseInt(synsetData[SYNSET_ID]);
             String synsetNouns = synsetData[SYNSET_NOUNS];
+            synsetIndices.put(synsetNouns, synsetID);
             sets[synsetID] = synsetNouns;
-            List<Integer> indices = synsetIndices.get(synsetNouns);
-            if (indices == null) {
-                indices = new ArrayList<>();
-                synsetIndices.put(synsetNouns, indices);
-            }
-            indices.add(synsetID);
             for (String synsetNoun : synsetNouns.split(" ")) {
+                List<Integer> indices = wordIndices.get(synsetNoun);
+                if (indices == null) {
+                    indices = new ArrayList<>();
+                }
                 indices.add(synsetID);
                 nouns.add(synsetNoun);
+                wordIndices.put(synsetNoun, indices);
             }
         }
         Digraph hypGraph = new Digraph(numSynsets);
@@ -101,6 +102,7 @@ public class WordNet {
 
     // is the word a WordNet noun?
     public boolean isNoun(String word) {
+        if (word == null) throw new IllegalArgumentException();
         for (String noun : nouns()) {
             if (noun.equals(word)) return true;
         }
@@ -109,11 +111,10 @@ public class WordNet {
 
     // distance between nounA and nounB (defined below)
     public int distance(String nounA, String nounB) {
-        String ancestor = sap(nounA, nounB);
-        int ancestorID = synsetIndices.get(ancestor);
-        int distNounA = new BreadthFirstDirectedPaths(hypernymGraph, synsetIndices.get(nounA)).distTo(ancestorID);
-        int distNounB = new BreadthFirstDirectedPaths(hypernymGraph, synsetIndices.get(nounB)).distTo(ancestorID);
-        return distNounA + distNounB;
+        if (shortestAncestralPaths == null) {
+            shortestAncestralPaths = new SAP(hypernymGraph);
+        }
+        return shortestAncestralPaths.length(wordIndices.get(nounA), wordIndices.get(nounB));
     }
 
     // a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB
@@ -122,13 +123,13 @@ public class WordNet {
         if (shortestAncestralPaths == null) {
             shortestAncestralPaths = new SAP(hypernymGraph);
         }
-        return synsets[shortestAncestralPaths.ancestor(synsetIndices.get(nounA), synsetIndices.get(nounB))];
+        return synsets[shortestAncestralPaths.ancestor(wordIndices.get(nounA), wordIndices.get(nounB))];
     }
 
     // do unit testing of this class
     public static void main(String[] args) {
         // Empty
         WordNet wn = new WordNet("wordnet/synsets.txt", "wordnet/hypernyms.txt");
-        System.out.println(wn.distance("gnat", "revenue_tariff"));
+        System.out.println(wn.distance("indiscreetness", "Cardigan_Welsh_corgi"));
     }
 }

@@ -18,15 +18,15 @@ public class Outcast {
 
 
     public String outcast(String[] nouns) {
-        int shortestDistanceSum = -1;
+        int longestDistanceSum = -1;
         String outcast = null;
         for (String noun : nouns) {
             int sum = 0;
             for (String otherNoun : nouns) {
                 sum += wordnet.distance(noun, otherNoun);
             }
-            if (shortestDistanceSum < 0 || sum < shortestDistanceSum) {
-                shortestDistanceSum = sum;
+            if (longestDistanceSum < 0 || sum > longestDistanceSum) {
+                longestDistanceSum = sum;
                 outcast = noun;
             }
         }

@@ -27,7 +27,7 @@ public class SAP {
 
     // constructor takes a digraph (not necessarily a DAG)
     public SAP(Digraph g) {
-        digraph = copyOf(g);
+        digraph = new Digraph(g);
         ancestorCache = new HashMap<>();
     }
 
@@ -65,17 +65,6 @@ public class SAP {
     public int ancestor(Iterable<Integer> v, Iterable<Integer> w) {
         Ancestor ancestor = new Ancestor(v, w);
         return ancestor.ancestor;
-    }
-
-    private static Digraph copyOf(Digraph g) {
-        int numVertices = g.V();
-        Digraph copy = new Digraph(numVertices);
-        for (int fromVertex = 0; fromVertex < numVertices; fromVertex++) {
-            for (int toVertex : g.adj(fromVertex)) {
-                copy.addEdge(fromVertex, toVertex);
-            }
-        }
-        return copy;
     }
 
     private class Ancestor {
